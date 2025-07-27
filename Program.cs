@@ -24,7 +24,7 @@ class Apitester
         }
 
         // Load propids
-        string propidFilePath = @"C:\Users\Desktop\propids.txt";
+        string propidFilePath = @"C:.\data\propids.txt";
         if (!File.Exists(propidFilePath))
         {
             Console.WriteLine("Propid file not found.");
@@ -47,8 +47,9 @@ class Apitester
             client.BaseAddress = new Uri("https://della.api.rentmanager.com/");
 
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Add("X-RM12Api-ApiToken", apiToken);
-            client.DefaultRequestHeaders.Add("X-RM12Api-locationID", "1");
+            client.DefaultRequestHeaders.Add("X-Api-Token", apiToken); // generalized
+            client.DefaultRequestHeaders.Add("X-Location-ID", Environment.GetEnvironmentVariable("API_LOCATIONID"));
+
 
             foreach (string propid in propids)
             {
@@ -71,15 +72,15 @@ class Apitester
                     }
                     else
                     {
-                        Console.WriteLine($"Error for {trimmedPropid} (March 2025): {ex.Message}");
+                        Console.WriteLine($"Error for {trimmedPropid} (April 2025): {ex.Message}");
                         continue;
                     }
                 }
 
-                string reportPath = $@"C:\Users\Desktop\reports\{trimmedPropid}";
+                string reportPath = "reports, trimmedPropid";
                 Directory.CreateDirectory(reportPath);
 
-                string reportFile = Path.Combine(reportPath, $"PnL_{themonth}_{endday}_{theYear}.csv");
+                string reportFile = Path.Combine(reportPath, $"Report_{themonth}_{endday}_{theYear}.csv");
 
                 using (Stream reportStream = await response.Content.ReadAsStreamAsync())
                 {
